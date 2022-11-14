@@ -84,7 +84,7 @@ client_create(const char *ip, const char *port, bool is_tcp)
     mu_init_sockaddr_in(&sa, ip, port);
     err = connect(sk, (struct sockaddr *)&sa, sizeof(sa));
     if (err == -1)
-        mu_die_errno(errno, "bind");
+        mu_die_errno(errno, "connect");
     return sk;
 }
 
