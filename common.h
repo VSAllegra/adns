@@ -44,4 +44,6 @@ void message_set_error(struct message *msg, int err);
 
 ssize_t message_deserialize_header(struct message *msg, const uint8_t * buf, size_t size);
 
+ssize_t message_serialize(struct message *msg, uint8_t *buf, size_t size);
+
 #endif /* _COMMON_H_ */

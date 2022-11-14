@@ -228,12 +228,12 @@ serve_forever_tcp4(int sk, struct zone * zone)
     int conn;
     char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
     int err;
-    unit8_t hdr[HEADER_SIZE] = { 0 };
+    uint8_t hdr[HEADER_SIZE] = { 0 };
     size_t total;
     struct message msg;
     ssize_t n;
+    uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
 
-    MU_UNUSED(zone);
 
     while (1) {
         addr_size = sizeof(addr);
@@ -284,9 +284,17 @@ serve_forever_tcp4(int sk, struct zone * zone)
             goto request_done:
         }
 
+        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
+
         process_message(zone, &msg);
 
+      
 send_response:
+        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
         n = message_serialize(&msg, buf, sizeof(buf));
         if (n < 0)
             mu_die("message_serialize");
