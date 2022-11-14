@@ -269,7 +269,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
 
         if (msg.body_len > MAX_BODY_LEN) {
             mu_stderr("%s: body length too large (%" PRIu16 ")", peer_str, msg.body_len);
-            message_set_erro(&msg, RCODE_FORMERR);
+            message_set_error(&msg, RCODE_FORMERR);
             goto send_response;
         }
 
