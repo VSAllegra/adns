@@ -50,11 +50,12 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     int err;
     struct message msg;
     size_t total;
+    ssize_t n;
 
     msg->type = qtype;
-    message_set_body(msg, query);
+    message_set_body(&msg, query);
 
-    n = message_serialize(msg, buf, sizeof(buf));
+    n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
         mu_die("message_serialize");
 
