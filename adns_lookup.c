@@ -157,7 +157,7 @@ main(int argc,char *argv[])
 
     free(ip_str);
     free(port_str);
-    zone_deinit(&zone);
+
 
     return 0;
 }
