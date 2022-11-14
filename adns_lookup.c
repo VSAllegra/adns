@@ -1,3 +1,165 @@
-int main(){
+#define _GNU_SOURCE
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <arpa/inet.h>
+
+#include <errno.h>
+#include <getopt.h>
+#include <inttypes.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "mu.h"
+#include "common.h"
+#include "uthash.h"
+
+
+#define USAGE \
+    "Usage:` adns [-h] [-i IP_ADDRESS] [-p PORT] [-t] ZONE_FILE\n" \
+    "\n" \
+    "A simplified version of a DNS server for IPv4.\n" \
+    "\n" \
+    "optional arguments\n" \
+    "   -h, --help\n" \
+    "       Show usage statement and exit.\n" \
+    "\n" \
+    "   -i, --interface IP_ADDRESS\n" \
+    "       The interface to listen on.\n" \
+    "       (default: INADDR_ANY)\n" \
+    "\n" \
+    "   -p, --port PORT\n" \
+    "       The port to listen on.\n" \
+    "       (default: 9514)\n" \
+    "\n" \
+    "   -t, --tcp\n" \
+    "       Use TCP instead of UDP."
+
+
+static int
+tcp_lookup(int sk, const int qtype, const char * query ){
+    char buf[BUF_SIZE] = { 0 };
+    uint8_t hdr[HEADER_SIZE] = { 0 };
+    int err;
+    struct message msg;
+    size_t total;
+
+    msg->type = qtype;
+    message_set_body(msg, query);
+
+    n = message_serialize(msg, buf, sizeof(buf));
+    if (n < 0)
+        mu_die("message_serialize");
+
+    err= mu_write_n(sk, buf, (size_t)n, &total);
+    if (err < 0)
+        mu_stderr_errno(-err, "%s: TCP send fialed", peer_str);
+
+    
+}
+
+
+static int
+client_create(const char *ip, const char *port, bool is_tcp)
+{
+    int sk;
+    struct sockaddr_in sa;
+    int err;
+
+    sk = socket(AF_INET, is_tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
+    if (sk == -1)
+        mu_die_errno(errno, "socket");
+    
+    if (is_tcp)
+        mu_reuseaddr(sk);
+
+    mu_init_sockaddr_in(&sa, ip, port);
+    err = connect(sk, (struct sockaddr *)&sa, sizeof(sa));
+    if (err == -1)
+        mu_die_errno(errno, "bind");
+    return sk;
+}
+
+
+
+
+static void
+usage(int status)
+{
+    puts(USAGE);
+    exit(status);
+}
+
+
+int 
+main(int argc,char *argv[])
+{
+    int opt, nargs;
+    const char *short_opts = ":hi:p:t";
+    struct option long_opts[] = {
+        {"help", no_argument, NULL, 'h'},
+        {"interface", required_argument, NULL, 'i'},
+        {"port", required_argument, NULL, 'p'},
+        {"tcp", no_argument, NULL, 't'},
+        {NULL, 0, NULL, 0}
+    };
+    bool is_tcp = false;
+    char *ip_str = NULL;
+    char *port_str = NULL;
+    int sk;
+    struct zone zone;
+
+    while (1) {
+        opt = getopt_long(argc, argv, short_opts, long_opts, NULL);
+        if (opt == -1)
+            break;
+
+        switch (opt) {
+        case 'h':   /* help */
+            usage(0);
+            break;
+        case 'i':
+            ip_str = mu_strdup(optarg);
+            break;
+        case 'p':
+            port_str = mu_strdup(optarg);
+            break;
+        case 't':
+            is_tcp = true;
+            break;
+        case '?':
+            mu_die("unknown option %c", optopt);
+            break;
+        case ':':
+            mu_die("missing option argument for option %c", optopt);
+            break;
+        default:
+            mu_panic("unexpected getopt_long return value: %c\n", (char)opt);
+        }
+    }
+
+    nargs = argc - optind;
+    if (nargs != 1)
+        mu_die("expected one positional argument (Query), but found %d", nargs);
+
+    sk = client_create(ip_str != NULL ? ip_str : DEFAULT_IP_STR,  
+            port_str != NULL ? port_str : DEFAULT_PORT_STR, 
+            is_tcp);
+    
+    if (is_tcp){
+        tcp_lookup(sk, QTYPE_A, argv[optind]);
+    } else {
+        udp_lookup(sk, &zone);
+    }
+
+    free(ip_str);
+    free(port_str);
+    zone_deinit(&zone);
+
     return 0;
 }
