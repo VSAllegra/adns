@@ -86,6 +86,6 @@ message_serialize(struct message *msg, uint8_t *buf, size_t size)
 
     memcpy(p, msg->body, body_len);
 
-    return (ssize_t)(HEADER_SIZE + body_len)
+    return (ssize_t)(HEADER_SIZE + body_len);
 
 }
