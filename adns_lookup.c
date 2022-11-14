@@ -23,7 +23,7 @@
 
 
 #define USAGE \
-    "Usage:` adns [-h] [-i IP_ADDRESS] [-p PORT] [-t] ZONE_FILE\n" \
+    "Usage:` adns [-h] [-i IP_ADDRESS] [-p PORT] [-t] QUERY\n" \
     "\n" \
     "A simplified version of a DNS server for IPv4.\n" \
     "\n" \
@@ -46,6 +46,7 @@
 static int
 tcp_lookup(int sk, const int qtype, const char * query ){
     char buf[BUF_SIZE] = { 0 };
+    char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
     uint8_t hdr[HEADER_SIZE] = { 0 };
     int err;
     struct message msg;
@@ -114,7 +115,6 @@ main(int argc,char *argv[])
     char *ip_str = NULL;
     char *port_str = NULL;
     int sk;
-    struct zone zone;
 
     while (1) {
         opt = getopt_long(argc, argv, short_opts, long_opts, NULL);
@@ -153,7 +153,7 @@ main(int argc,char *argv[])
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
             is_tcp);
     
-    if (is_tcp){
+    if (is_tcp)
         tcp_lookup(sk, QTYPE_A, argv[optind]);
 
 
