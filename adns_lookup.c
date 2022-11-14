@@ -19,6 +19,8 @@
 #include "common.h"
 #include "uthash.h"
 
+#define DEFAULT_IP_STR "0.0.0.0"
+
 
 #define USAGE \
     "Usage:` adns [-h] [-i IP_ADDRESS] [-p PORT] [-t] ZONE_FILE\n" \
