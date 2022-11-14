@@ -313,7 +313,8 @@ request_done:
 static void
 serve_forever_udp4(int sk, struct zone * zone)
 {
-  prinf("YO");
+  MU_UNUSED(sk);
+  MU_UNUSED(zone);
 }
 
 
@@ -324,7 +325,7 @@ server_create(const char *ip, const char *port, bool is_tcp)
     struct sockaddr_in sa;
     int err;
 
-    sk = socket(AF_INET, is_tcp ? SOCKET_STREAM : SOCK_DGRAM, 0);
+    sk = socket(AF_INET, is_tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
     if (sk == -1)
         mu_die_errno(errno, "socket");
     
