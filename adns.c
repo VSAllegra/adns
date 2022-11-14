@@ -415,7 +415,7 @@ main(int argc,char *argv[])
             is_tcp);
     
     printf("%s", ip_str);
-    printf("%s" port_str);
+    printf("%s", port_str);
     if (is_tcp){
         serve_forever_tcp4(sk, &zone);
     } else {
