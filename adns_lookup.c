@@ -61,9 +61,9 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
     err= mu_write_n(sk, buf, (size_t)n, &total);
     if (err < 0)
-        mu_stderr_errno(-err, "%s: TCP send fialed", peer_str);
-
+        mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
     
+    return msg.type;
 }
 
 
