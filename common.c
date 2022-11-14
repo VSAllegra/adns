@@ -49,20 +49,20 @@ message_deserialize_header(struct message *msg, const uint8_t * buf, size_t size
     p += sizeof(msg->id);
 
     memcpy(&msg->type, p, sizeof(msg->type));
-    msg->type = be32oh(msg->type);
+    msg->type = be32toh(msg->type);
     p += sizeof(msg->type);
 
     memcpy(&msg->body_len, p, sizeof(msg->body_len));
-    msg->body_len = be16oh(msg->body_len);
+    msg->body_len = be16toh(msg->body_len);
     p += sizeof(msg->body_len);
 
     return HEADER_SIZE;
 }
 
 ssize_t
-message_serialize(struct message *msg, uint8_t *buf, size_t size)
+message_serialize(struct message *msg, const uint8_t *buf, size_t size)
 {
-    const uint8_t *p = buf;
+    uint8_t *p = buf;
     size_t body_len = msg->body_len;
     uint32_t tmp32;
     uint32_t tmp16;
