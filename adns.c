@@ -263,7 +263,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
 
         if (msg.body_len == 0) {
             mu_stderr("%s: zero-length body", peer_str);
-            message_set_erro(&msg, RCODE_FORMERR);
+            message_set_error(&msg, RCODE_FORMERR);
             goto send_response;
         }
 
