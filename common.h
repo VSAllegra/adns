@@ -42,7 +42,7 @@ void message_set_body(struct message *msg, const char *value);
 
 void message_set_error(struct message *msg, int err);
 
-ssize_t message_deserialize_header(struct message *msg, const uint8_t * buf, size_t size);
+ssize_t message_deserialize_header(struct message *msg, uint8_t * buf, size_t size);
 
 ssize_t message_serialize(struct message *msg, uint8_t *buf, size_t size);
 
