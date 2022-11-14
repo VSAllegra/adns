@@ -35,10 +35,10 @@ message_set_error(struct message *msg, int err)
 }
 
 ssize_t
-message_deserialize_header(struct message *msg, const uint8_t * buf, size_t size)
+message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
 {
     
-    const unint8_t *p = buf;
+    const uint8_t *p = buf;
     mu_memzero_p(msg);
 
     if(size < HEADER_SIZE)
@@ -60,9 +60,9 @@ message_deserialize_header(struct message *msg, const uint8_t * buf, size_t size
 }
 
 ssize_t
-message_serialize(struct message *msg, const uint8_t *buf, size_t size)
+message_serialize(struct message *msg, uint8_t *buf, size_t size)
 {
-    uint8_t *p = buf;
+    const uint8_t *p = buf;
     size_t body_len = msg->body_len;
     uint32_t tmp32;
     uint32_t tmp16;
