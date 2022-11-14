@@ -44,7 +44,7 @@ message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
     if(size < HEADER_SIZE)
         return -ENOMSG;
 
-    memcpy(&msg->id, sizeof(msg->id));
+    memcpy(&msg->id, p, sizeof(msg->id));
     msg->id = be32toh(msg->id);
     p += sizeof(msg->id);
 
