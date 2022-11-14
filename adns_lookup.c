@@ -153,9 +153,7 @@ main(int argc,char *argv[])
     
     if (is_tcp){
         tcp_lookup(sk, QTYPE_A, argv[optind]);
-    } else {
-        udp_lookup(sk, &zone);
-    }
+
 
     free(ip_str);
     free(port_str);
