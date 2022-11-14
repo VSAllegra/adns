@@ -408,7 +408,7 @@ main(int argc,char *argv[])
 
     zone_init(&zone);
     zone_read_file(&zone, argv[optind]);
-    //zone_print(&zone);
+    zone_print(&zone);
 
     sk = server_create(ip_str != NULL ? ip_str : DEFAULT_IP_STR,  
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
