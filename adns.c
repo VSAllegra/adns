@@ -264,7 +264,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
         if (msg.body_len == 0) {
             mu_stderr("%s: zero-length body", peer_str);
             message_set_erro(&msg, RCODE_FORMERR);
-            goto send_response
+            goto send_response;
         }
 
         if (msg.body_len > MAX_BODY_LEN) {
@@ -278,10 +278,10 @@ serve_forever_tcp4(int sk, struct zone * zone)
         err = mu_read_n(conn, msg.body, msg.body_len, &total);
         if (err < 0) {
             mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
-            goto request_done:
+            goto request_done;
         } else if (total != sizeof(hdr)) {
             mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
-            goto request_done:
+            goto request_done;
         }
 
         mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
@@ -313,8 +313,7 @@ request_done:
 static void
 serve_forever_udp4(int sk, struct zone * zone)
 {
-    MU_UNUSED(sk);
-    MU_UNUSED(zone);
+  prinf("YO");
 }
 
 
@@ -325,7 +324,7 @@ server_create(const char *ip, const char *port, bool is_tcp)
     struct sockaddr_in sa;
     int err;
 
-    sk = soket(AF_INET, is_tcp  n ? SOCKET_STREAM : SOCK_DGRAM, 0);
+    sk = socket(AF_INET, is_tcp ? SOCKET_STREAM : SOCK_DGRAM, 0);
     if (sk == -1)
         mu_die_errno(errno, "socket");
     
