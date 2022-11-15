@@ -54,6 +54,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
     msg.type = qtype;
     message_set_body(&msg, query);
+    mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+        peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
     n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
