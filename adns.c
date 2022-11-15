@@ -408,14 +408,12 @@ main(int argc,char *argv[])
 
     zone_init(&zone);
     zone_read_file(&zone, argv[optind]);
-    zone_print(&zone);
+    //zone_print(&zone);
 
     sk = server_create(ip_str != NULL ? ip_str : DEFAULT_IP_STR,  
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
             is_tcp);
     
-    printf("IPSTR %s\n", ip_str);
-    printf("PORTSTR %s\n", port_str);
     if (is_tcp){
         serve_forever_tcp4(sk, &zone);
     } else {

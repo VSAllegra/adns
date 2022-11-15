@@ -153,6 +153,7 @@ main(int argc,char *argv[])
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
             is_tcp);
     
+    printf("%s", argv[optind]);
     if (is_tcp)
         tcp_lookup(sk, QTYPE_A, argv[optind]);
 
