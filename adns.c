@@ -284,6 +284,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
             goto request_done;
         }
 
+        printf("%s", msg.body);
         mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
             peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
