@@ -55,6 +55,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     msg.type = qtype;
     message_set_body(&msg, query);
 
+    printf("%s", msg.body);
+
     n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
         mu_die("message_serialize");
@@ -153,7 +155,6 @@ main(int argc,char *argv[])
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
             is_tcp);
     
-    printf("%s", argv[optind]);
     if (is_tcp)
         tcp_lookup(sk, QTYPE_A, argv[optind]);
 
