@@ -47,6 +47,7 @@ static int
 tcp_lookup(int sk, const int qtype, const char * query ){
     uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
     char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
+    uint8_t hdr[HEADER_SIZE] = { 0 };
     int err;
     size_t total;
     struct message msg;
@@ -67,10 +68,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     err = mu_read_n(sk, hdr, sizeof(hdr), &total);
     if (err < 0){
         mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-        goto request_done;
     } else if (total != sizeof(hdr)){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
-        goto request_done;
     }
 
     /* parse header */
