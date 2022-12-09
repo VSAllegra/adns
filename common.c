@@ -60,7 +60,7 @@ message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
 }
 
 ssize_t
-message_serialize(const struct message *msg, uint8_t *buf, size_t size)
+message_serialize(struct message *msg, uint8_t *buf, size_t size)
 {
     uint8_t *p = buf;
     size_t body_len = msg->body_len;
