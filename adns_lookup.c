@@ -148,7 +148,7 @@ main(int argc,char *argv[])
     }
 
     nargs = argc - optind;
-    if (nargs != 1)
+    if (nargs < 1)
         mu_die("expected one positional argument (Query), but found %d", nargs);
 
     sk = client_create(ip_str != NULL ? ip_str : DEFAULT_IP_STR,  
