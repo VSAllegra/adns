@@ -86,7 +86,7 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     }
 
-    printf("%s", msg.body);
+    printf("%s\n", msg.body);
     //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
