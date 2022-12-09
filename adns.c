@@ -381,6 +381,7 @@ serve_forever_udp4(int sk, struct zone * zone)
 
 
         process_message(zone, &msg);
+        goto send_response;
 
       
 send_response:
