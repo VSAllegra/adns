@@ -242,7 +242,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
             mu_die_errno(errno, "accept");
         
         mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-        mu_pr_debug("%s: connected", peer_str);
+        //mu_pr_debug("%s: connected", peer_str);
 
         /* receive header */
         err = mu_read_n(conn, hdr, sizeof(hdr), &total);
@@ -285,16 +285,16 @@ serve_forever_tcp4(int sk, struct zone * zone)
         }
 
         printf("%s", msg.body);
-        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
 
         process_message(zone, &msg);
 
       
 send_response:
-        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
         n = message_serialize(&msg, buf, sizeof(buf));
         if (n < 0)
@@ -333,7 +333,7 @@ serve_forever_udp4(int sk, struct zone * zone)
             mu_die_errno(errno, "accept");
         
         mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-        mu_pr_debug("%s: connected", peer_str);
+        //mu_pr_debug("%s: connected", peer_str);
 
         /* receive header */
         err = mu_read_n(conn, hdr, sizeof(hdr), &total);
@@ -376,8 +376,8 @@ serve_forever_udp4(int sk, struct zone * zone)
         }
 
         printf("%s", msg.body);
-        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
 
         process_message(zone, &msg);
