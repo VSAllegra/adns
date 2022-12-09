@@ -207,7 +207,7 @@ process_message(const struct zone * zone, struct message *msg)
 {
     struct rr * rr = NULL;
 
-    if (msg->type == QTYPE_A) {
+    if (msg->type == 0) {
         rr = zone_get_rr(zone, msg->body);
         if (rr == NULL) {
             message_set_error(msg, RCODE_NXDOMAIN);
@@ -381,7 +381,6 @@ serve_forever_udp4(int sk, struct zone * zone)
 
 
         process_message(zone, &msg);
-        goto send_response;
 
       
 send_response:
