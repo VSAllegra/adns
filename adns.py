@@ -150,6 +150,7 @@ class ADNSUDPHandler(socketserver.BaseRequestHandler):
                 return
 
             _id, qtype, body_len = struct.unpack('>IHH', data[:HEADER_SIZE])
+            body_len = 6
             if body_len == 0:
                 logging.warning("%s: zero-length body", self.client_address)
                 sk.sendto(make_response(_id, RCODE_FORMERR), self.client_address)
