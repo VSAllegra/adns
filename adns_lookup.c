@@ -62,11 +62,11 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_die("message_serialize");
 
     err = mu_write_n(sk, buf, (size_t)n, &total);
-    if (err < 0)
+    if (err < 0){
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
-    
-    mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-        peer_str, msg.id, msg.type, sizeof(buf), buf);
+    }else
+        mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+        peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
     return msg.type;
 }
