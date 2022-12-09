@@ -80,7 +80,7 @@ message_serialize(struct message *msg, uint8_t *buf, size_t size)
     memcpy(p, &tmp16, sizeof(tmp16));
     p += sizeof(tmp16);
 
-    tmp16 = htobe16(msg->body_len);
+    tmp16 = htobe16(body_len);
     memcpy(p, &tmp16, sizeof(tmp16));
     p += sizeof(tmp16);
 

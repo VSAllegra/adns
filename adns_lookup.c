@@ -48,8 +48,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
     char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
     int err;
-    struct message msg;
     size_t total;
+    struct message msg;
     ssize_t n;
 
     msg.type = qtype;
@@ -62,11 +62,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_die("message_serialize");
 
     err = mu_write_n(sk, buf, (size_t)n, &total);
-    if (err < 0){
+    if (err < 0)
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
-    }else
-        mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-        peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
     return msg.type;
 }
