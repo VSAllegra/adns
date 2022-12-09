@@ -60,7 +60,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
         mu_die("message_serialize");
-
+    
+    printf("%d\n", n);
     err = mu_write_n(sk, buf, (size_t)n, &total);
     if (err < 0)
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
