@@ -82,7 +82,6 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     err = mu_read_n(sk, msg.body, msg.body_len, &total);
     if (err < 0) {
         mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-        goto request_done;
     } else if (total != msg.body_len) {
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     }
