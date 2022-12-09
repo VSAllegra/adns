@@ -60,12 +60,12 @@ message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
 }
 
 ssize_t
-message_serialize(struct message *msg, uint8_t *buf, size_t size)
+message_serialize(const struct message *msg, uint8_t *buf, size_t size)
 {
     uint8_t *p = buf;
     size_t body_len = msg->body_len;
     uint32_t tmp32;
-    uint32_t tmp16;
+    uint16_t tmp16;
 
     assert(body_len <= MAX_BODY_LEN);
 
@@ -80,12 +80,11 @@ message_serialize(struct message *msg, uint8_t *buf, size_t size)
     memcpy(p, &tmp16, sizeof(tmp16));
     p += sizeof(tmp16);
 
-    tmp16 = htobe16(msg->body);
+    tmp16 = htobe16(msg->body_len);
     memcpy(p, &tmp16, sizeof(tmp16));
     p += sizeof(tmp16);
 
     memcpy(p, msg->body, body_len);
 
     return (ssize_t)(HEADER_SIZE + body_len);
-
 }
