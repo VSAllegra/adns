@@ -23,7 +23,7 @@ message_set_body(struct message *msg, const char *value)
     assert(len <= MAX_BODY_SIZE);
 
     msg->body_len = len;
-    printf("%d\n", msg->body_len)
+    printf("%d\n", msg->body_len);
     mu_strlcpy(msg->body, value, sizeof(msg->body));
 }
 
