@@ -279,7 +279,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
         if (err < 0) {
             mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
             goto request_done;
-        } else if (total != sizeof(hdr)) {
+        } else if (total != msg.body_len) {
             mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
             goto request_done;
         }
@@ -314,8 +314,34 @@ request_done:
 static void
 serve_forever_udp4(int sk, struct zone * zone)
 {
-  MU_UNUSED(sk);
-  MU_UNUSED(zone);
+    char buf[BUF_SIZE] = { 0 };
+    struct sockaddr_in peer;
+    socklen_t addrlen;
+    ssize_t n, i;
+    char peer_ip[INET_ADDRSTRLEN] = { 0 };
+    uint16_t peer_port;
+
+    while (1) {
+        addrlen = sizeof(peer);
+        n = recvfrom(sk, buf, sizeof(buf), 0, (struct sockaddr *)&peer, &addrlen);
+        if (n == -1)
+            mu_die_errno(errno, "recvfrom");
+
+        if (inet_ntop(AF_INET, &peer.sin_addr, peer_ip, sizeof(peer_ip)) == NULL)
+            mu_die_errno(errno, "inet_ntop");
+        peer_port = ntohs(peer.sin_port);
+
+        printf("msg from %s:%u\n", peer_ip, peer_port);
+
+        for (i = 0; i < n; i++)
+            buf[i] = toupper(buf[i]);
+
+        n = sendto(sk, buf, n, 0, (struct sockaddr *)&peer, sizeof(peer));
+        if (n == -1)
+            mu_die_errno(errno, "sendto");
+        
+        process_message(zone, &msg);
+    }
 }
 
 
