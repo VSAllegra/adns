@@ -266,7 +266,6 @@ serve_forever_tcp4(int sk, struct zone * zone)
             message_set_error(&msg, RCODE_FORMERR);
             goto send_response;
         }
-
         if (msg.body_len > MAX_BODY_LEN) {
             mu_stderr("%s: body length too large (%" PRIu16 ")", peer_str, msg.body_len);
             message_set_error(&msg, RCODE_FORMERR);
@@ -335,7 +334,7 @@ serve_forever_udp4(int sk, struct zone * zone)
                 mu_stderr("%s: incomplete header", peer_str);
                 continue;
             } else if (n == -E2BIG){
-                mu_stderr("%s: body length too large ("PRIu16")", peer_str, msg.body_len);
+                mu_stderr("%s: body length too large", peer_str);
                 message_set_error(&msg, RCODE_FORMERR);
                 goto send_resonse;
             } else {
@@ -345,7 +344,7 @@ serve_forever_udp4(int sk, struct zone * zone)
         }
 
         if (msg.body_len == 0){
-            mu_stderr("%s: zero-length body", peet_str);
+            mu_stderr("%s: zero-length body", peer_str);
             message_set_error(&msg, RCODE_FORMERR);
             
         }
