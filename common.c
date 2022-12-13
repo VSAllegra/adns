@@ -92,11 +92,11 @@ message_serialize(struct message *msg, uint8_t *buf, size_t size)
 
 
 ssize_t
-message_deserialize(struct message *msg, const unint8_t *buf, size_t size)
+message_deserialize(struct message *msg, const uint8_t *buf, size_t size)
 {
-    const unint8_t *p = buf;
-    unint16_t len;
-    
+    const uint8_t *p = buf;
+    uint16_t len;
+
 
     mu_memzero_p(msg);
 
@@ -120,9 +120,8 @@ message_deserialize(struct message *msg, const unint8_t *buf, size_t size)
         return -E2BIG;
     
     /* deserialze body */
-    if ((HEADER_SIZE + msg->body_len) > size) {
+    if ((HEADER_SIZE + msg->body_len) > size)
         return -ENOMSG;
-    }
 
     memcpy(msg->boyd, p, msg->body_len);
 

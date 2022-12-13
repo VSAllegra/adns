@@ -46,6 +46,6 @@ ssize_t message_deserialize_header(struct message *msg, uint8_t * buf, size_t si
 
 ssize_t message_serialize(struct message *msg, uint8_t *buf, size_t size);
 
-ssize_t message_deserialize(struct message *msg, const unint8_t *buf, size_t size)
+ssize_t message_deserialize(struct message *msg, const uint8_t *buf, size_t size)
 
 #endif /* _COMMON_H_ */
