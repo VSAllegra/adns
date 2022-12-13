@@ -54,7 +54,7 @@ message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
 
     memcpy(&msg->body_len, p, sizeof(msg->body_len));
     msg->body_len = be16toh(msg->body_len);
-    p += sizeof(msg->body_len);
+
     
 
     return HEADER_SIZE;
