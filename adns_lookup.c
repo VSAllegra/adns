@@ -177,7 +177,6 @@ int
 main(int argc,char *argv[])
 {
     int opt, nargs;
-    int type;
     const char *short_opts = ":hi:p:t";
     struct option long_opts[] = {
         {"help", no_argument, NULL, 'h'},
