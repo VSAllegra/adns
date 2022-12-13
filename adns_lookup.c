@@ -117,14 +117,13 @@ udp_lookup(int sk, const int qtype, const char * query ){
     if (err < 0)
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
 
-    while(1){
-        n = recvfrom(sk, buf, sizeof(buf), 0, NULL, NULL);
+    
+    n = recvfrom(sk, buf, sizeof(buf), 0, NULL, NULL);
 
-        n = message_deserialize(&msg, buf, sizeof(buf));
-    }
-
+    n = message_deserialize(&msg, buf, sizeof(buf));
 
     printf("%s\n", msg.body);   
+    
     
     return msg.type;
 }
@@ -141,8 +140,8 @@ client_create(const char *ip, const char *port, bool is_tcp)
     if (sk == -1)
         mu_die_errno(errno, "socket");
     
-    if (is_tcp)
-        mu_reuseaddr(sk);
+   
+    mu_reuseaddr(sk);
 
     mu_init_sockaddr_in(&sa, ip, port);
     err = connect(sk, (struct sockaddr *)&sa, sizeof(sa));
