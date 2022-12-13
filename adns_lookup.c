@@ -134,7 +134,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(sizeof(query) < 9){
+    if(){
         printf("malformed request\n");
         exit(1);
     }
@@ -229,7 +229,8 @@ main(int argc,char *argv[])
 
     nargs = argc - optind;
     if (nargs  == 1){
-        query = mu_strdup(argv[optind]);
+        ip_str = mu_strdup(argv[optind]);
+        query = ""
     }
     else if (nargs == 2){
         ip_str = mu_strdup(argv[optind]);
