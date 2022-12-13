@@ -74,9 +74,16 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
     /* parse header */
     n = message_deserialize_header(&msg, hdr, sizeof(hdr));
-    if (n < 0) {
-        mu_stderr("%s: malformed message header", peer_str);
+
+    if(msg.type == RCODE_FORMERR){
+        printf("malformed request\n");
+        exit(-1);
     }
+    else if (msg.type == RCODE_NXDOMAIN){
+        print("not found\n");
+        exit(-1);
+    }
+
 
     /* receive body */
     err = mu_read_n(sk, msg.body, msg.body_len, &total);
@@ -84,12 +91,12 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
     } else if (total != msg.body_len) {
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
-    }
+    } 
     
     //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
-    printf("%s\n", msg.body);   
+ 
 
     return msg.type;
 }
@@ -121,7 +128,16 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    printf("%s\n", msg.body);   
+    if(msg.type == RCODE_FORMERR){
+        printf("malformed request\n");
+        exit(-1);
+    }
+    else if (msg.type == RCODE_NXDOMAIN){
+        print("not found\n");
+        exit(-1);
+    }
+    else
+        printf("%s\n", msg.body);   
     
     
     return msg.type;
