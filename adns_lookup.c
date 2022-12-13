@@ -232,9 +232,9 @@ main(int argc,char *argv[])
             is_tcp);
     
     if (is_tcp)
-        type = tcp_lookup(sk, QTYPE_A, query);
+        tcp_lookup(sk, QTYPE_A, query);
     else
-        type = udp_lookup(sk, QTYPE_A, query);
+        udp_lookup(sk, QTYPE_A, query);
     
     free(ip_str);
     free(port_str);
