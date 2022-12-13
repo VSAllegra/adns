@@ -85,7 +85,12 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     } 
 
-    if(msg.body_len == 0){
+
+    if(sizeof(query) < 1){
+        printf("malformed request\n");
+        exit(1);
+    }
+    else if(msg.body_len == 0){
         printf("not found\n");
         exit(1);
     } else {
@@ -128,7 +133,11 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(msg.body_len == 0){
+    if(sizeof(query) < 1){
+        printf("malformed request\n");
+        exit(1);
+    }
+    else if(msg.body_len == 0){
         printf("not found\n");
         exit(1);
     } else {
