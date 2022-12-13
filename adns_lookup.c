@@ -117,9 +117,11 @@ udp_lookup(int sk, const int qtype, const char * query ){
     if (err < 0)
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
 
-    n = recvfrom(sk, buf, sizeof(buf), 0, NULL, NULL);
+    while(1){
+        n = recvfrom(sk, buf, sizeof(buf), 0, NULL, NULL);
 
-    n = message_deserialize(&msg, buf, sizeof(buf));
+        n = message_deserialize(&msg, buf, sizeof(buf));
+    }
 
 
     printf("%s\n", msg.body);   
