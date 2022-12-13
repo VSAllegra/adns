@@ -75,18 +75,10 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     /* parse header */
     n = message_deserialize_header(&msg, hdr, sizeof(hdr));
 
-    if(msg.type == 2){
-        printf("malformed request\n");
-        exit(-1);
-    }
-    else if (msg.type == 3){
-        printf("not found\n");
-        exit(-1);
-    }
-
 
     /* receive body */
     err = mu_read_n(sk, msg.body, msg.body_len, &total);
+    
     if (err < 0) {
         mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
     } else if (total != msg.body_len) {
@@ -150,6 +142,7 @@ client_create(const char *ip, const char *port, bool is_tcp)
     int sk;
     struct sockaddr_in sa;
     int err;
+    int type;
 
     sk = socket(AF_INET, is_tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
     if (sk == -1)
@@ -235,10 +228,18 @@ main(int argc,char *argv[])
             is_tcp);
     
     if (is_tcp)
-        tcp_lookup(sk, QTYPE_A, query);
+        type = tcp_lookup(sk, QTYPE_A, query);
     else
-        udp_lookup(sk, QTYPE_A, query);
+        type = udp_lookup(sk, QTYPE_A, query);
 
+     if(msg.type == 2){
+        printf("malformed request\n");
+        exit(1);
+    }
+    else if (msg.type == 3){
+        printf("not found\n");
+        exit(1);
+    }
 
     free(ip_str);
     free(port_str);
