@@ -55,6 +55,10 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
     msg.type = qtype;
     message_set_body(&msg, query);
+    if(msg.body_len == 0){
+        printf("malformed request\n");
+        exit(1);
+    }
     //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
     n = message_serialize(&msg, buf, sizeof(buf));
@@ -85,13 +89,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     } 
 
-    printf("%s\n", *query);
-    printf("%ld\n", sizeof(*query));
-    if(sizeof(*query) < 2){
-        printf("malformed request\n");
-        exit(1);
-    }
-    else if(msg.body_len == 0){
+   
+    if(msg.body_len == 0){
         printf("not found\n");
         exit(1);
     } else {
@@ -121,6 +120,10 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     msg.type = qtype;
     message_set_body(&msg, query);
+    if(msg.body_len == 0){
+        printf("malformed request\n");
+        exit(1);
+    }
     //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
     n = message_serialize(&msg, buf, sizeof(buf));
