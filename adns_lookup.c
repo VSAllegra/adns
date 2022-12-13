@@ -186,9 +186,6 @@ main(int argc,char *argv[])
         case 'h':   /* help */
             usage(0);
             break;
-        case 'i':
-            ip_str = mu_strdup(optarg);
-            break;
         case 'p':
             port_str = mu_strdup(optarg);
             break;
@@ -209,6 +206,10 @@ main(int argc,char *argv[])
     nargs = argc - optind;
     if (nargs < 1)
         mu_die("expected one positional argument (Query), but found %d", nargs);
+    if (nargs == 2){
+        ip_str = mu_strdup(argv[optind+1]);
+    }
+    
 
     sk = client_create(ip_str != NULL ? ip_str : DEFAULT_IP_STR,  
             port_str != NULL ? port_str : DEFAULT_PORT_STR, 
