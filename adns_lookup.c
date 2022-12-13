@@ -104,8 +104,6 @@ udp_lookup(int sk, const int qtype, const char * query ){
     size_t total;
     struct message msg;
     ssize_t n;
-    struct sockaddr_in addr;
-    socklen_t addr_size;
 
     msg.type = qtype;
     message_set_body(&msg, query);
@@ -126,15 +124,9 @@ udp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
     }
 
-    addr_size = sizeof(addr);
-    n = recvfrom(sk, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addr_size);
+    n = recvfrom(sk, msg.body, msg.body_len, 0, NULL, NULL);
     if (n== -1)
         mu_die_errno(errno, "recvfrom");
-        
-    mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-    mu_pr_debug("%s: tx %zd", peer_str, n);
-
-    n = message_deserialize(&msg, buf, sizeof(buf));
 
     
     mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
