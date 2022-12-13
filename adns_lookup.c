@@ -133,7 +133,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(sizeof(query) < 1){
+    if(sizeof(query) < 2){
         printf("malformed request\n");
         exit(1);
     }
