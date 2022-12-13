@@ -105,7 +105,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
     struct message msg;
     ssize_t n;
 
-      msg.type = qtype;
+    msg.type = qtype;
     message_set_body(&msg, query);
     //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
@@ -117,26 +117,9 @@ udp_lookup(int sk, const int qtype, const char * query ){
     if (err < 0)
         mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
 
-    err = mu_read_n(sk, hdr, sizeof(hdr), &total);
-    if (err < 0){
-        mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-    } else if (total != sizeof(hdr)){
-        mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
-    }
+    n = recvfrom(sk, buf, sizeof(buf), 0, NULL, NULL);
 
-    /* parse header */
-    n = message_deserialize_header(&msg, hdr, sizeof(hdr));
-    if (n < 0) {
-        mu_stderr("%s: malformed message header", peer_str);
-    }
-
-    /* receive body */
-    err = mu_read_n(sk, msg.body, msg.body_len, &total);
-    if (err < 0) {
-        mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
-    } else if (total != msg.body_len) {
-        mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
-    }
+    n = message_deserialize(&msg, buf, sizeof(buf));
 
 
     printf("%s\n", msg.body);   

@@ -326,7 +326,7 @@ serve_forever_udp4(int sk, struct zone * zone)
             mu_die_errno(errno, "recvfrom");
         
         mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-        mu_pr_debug("%s: tx %zd", peer_str, n);
+        //mu_pr_debug("%s: tx %zd", peer_str, n);
 
         n = message_deserialize(&msg, buf, sizeof(buf));
         if (n < 0) {
