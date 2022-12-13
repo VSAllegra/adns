@@ -284,7 +284,6 @@ serve_forever_tcp4(int sk, struct zone * zone)
             goto request_done;
         }
 
-        printf("%s\n", msg.body);
         mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
             peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
@@ -317,6 +316,7 @@ serve_forever_udp4(int sk, struct zone * zone)
    struct sockaddr_in addr;
    socklen_t addr_size;
    ssize_t n = 0;
+   struct message msg;
    uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
    char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
 
@@ -330,7 +330,44 @@ serve_forever_udp4(int sk, struct zone * zone)
         mu_pr_debug("%s: tx %zd", peer_str, n);
 
         n = message_deserialize(&msg, buf, sizeof(buf));
+        if (n < 0) {
+            if (n == -ENOMSG) {
+                mu_stderr("%s: incomplete header", peet_str);
+                continue;
+            } else if (n == -E2BIG){
+                mu_stderr("%s: body length too large ("PRIu16")", peet_str, msg.body_len);
+                message_set_error(&msg, RCODE_FORMERR);
+                goto send_resonse;
+            } else {
+                mu_stderr("%s: malformed request", peer_str);
+                continue
+            }
+        }
+
+        if (msg.body_len == 0){
+            mu_stderr("%s: zero-length body", peet_str);
+            message_set_error(&msg, RCODE_FORMERR);
+            
+        }
+        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
+
+        process_message(zone, &msg);
    }
+
+      
+send_response:
+        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
+        n = message_serialize(&msg, buf, sizeof(buf));
+        if (n < 0)
+            mu_die("message_serialize");
+
+        n = sendto(sk, buf, (size_t)n, 0, &addr, addr_size);
+        if (n == -1)
+            mu_stderr_errno(errno, "%s: sent", peer_str);
 
 }
 
