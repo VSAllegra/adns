@@ -230,7 +230,7 @@ main(int argc,char *argv[])
     nargs = argc - optind;
     if (nargs  == 1){
         ip_str = mu_strdup(argv[optind]);
-        query = ""
+        query = "";
     }
     else if (nargs == 2){
         ip_str = mu_strdup(argv[optind]);
