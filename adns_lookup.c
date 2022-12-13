@@ -85,6 +85,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     } 
 
+    printf("%s\n", *query);
+    printf("%ld\n", sizeof(*query));
     if(sizeof(*query) < 2){
         printf("malformed request\n");
         exit(1);
