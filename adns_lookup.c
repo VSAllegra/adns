@@ -84,6 +84,14 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     } else if (total != msg.body_len) {
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     } 
+
+    if(msg.body_len == 0){
+        printf("not found\n");
+        exit(1);
+    } else {
+        printf("%s\n", msg.body);
+    }
+
     
     //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
@@ -120,7 +128,12 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    printf("%s\n", msg.body);   
+    if(msg.body_len == 0){
+        printf("not found\n");
+        exit(1);
+    } else {
+        printf("%s\n", msg.body);
+    }
     
     
     return msg.type;
@@ -224,17 +237,6 @@ main(int argc,char *argv[])
     else
         type = udp_lookup(sk, QTYPE_A, query);
     
-    printf("type : %d", type);
-
-    if(type == 2){
-        printf("malformed request\n");
-        exit(1);
-    }
-    else if (type == 3){
-        printf("not found\n");
-        exit(1);
-    }
-
     free(ip_str);
     free(port_str);
 
