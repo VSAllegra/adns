@@ -142,7 +142,7 @@ client_create(const char *ip, const char *port, bool is_tcp)
     int sk;
     struct sockaddr_in sa;
     int err;
-    int type;
+    
 
     sk = socket(AF_INET, is_tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
     if (sk == -1)
@@ -173,6 +173,7 @@ int
 main(int argc,char *argv[])
 {
     int opt, nargs;
+    int type;
     const char *short_opts = ":hi:p:t";
     struct option long_opts[] = {
         {"help", no_argument, NULL, 'h'},
