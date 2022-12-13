@@ -353,7 +353,6 @@ serve_forever_udp4(int sk, struct zone * zone)
 
 
         process_message(zone, &msg);
-   }
 
       
 send_resonse:
@@ -367,6 +366,7 @@ send_resonse:
         n = sendto(sk, buf, (size_t)n, 0, &addr, addr_size);
         if (n == -1)
             mu_stderr_errno(errno, "%s: sent", peer_str);
+   }
 
 }
 
