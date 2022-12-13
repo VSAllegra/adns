@@ -242,7 +242,7 @@ serve_forever_tcp4(int sk, struct zone * zone)
             mu_die_errno(errno, "accept");
         
         mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-        //mu_pr_debug("%s: connected", peer_str);
+        mu_pr_debug("%s: connected", peer_str);
 
         /* receive header */
         err = mu_read_n(conn, hdr, sizeof(hdr), &total);
@@ -285,99 +285,8 @@ serve_forever_tcp4(int sk, struct zone * zone)
         }
 
         printf("%s\n", msg.body);
-        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
-
-
-        process_message(zone, &msg);
-
-      
-send_response:
-        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
-
-        n = message_serialize(&msg, buf, sizeof(buf));
-        if (n < 0)
-            mu_die("message_serialize");
-
-        err= mu_write_n(conn, buf, (size_t)n, &total);
-        if (err < 0)
-            mu_stderr_errno(-err, "%s: TCP send fialed", peer_str);
-
-request_done:
-        close(conn);
-    }
-
-}
-
-
-static void
-serve_forever_udp4(int sk, struct zone * zone)
-{
-    struct sockaddr_in addr;
-    socklen_t addr_size;
-    int conn;
-    char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
-    int err;
-    uint8_t hdr[HEADER_SIZE] = { 0 };
-    size_t total;
-    struct message msg;
-    ssize_t n;
-    uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
-
-
-    while (1) {
-        addr_size = sizeof(addr);
-        conn = accept(sk, (struct sockaddr *)&addr, &addr_size);
-        if (conn == -1)
-            mu_die_errno(errno, "accept");
-        
-        mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
-        //mu_pr_debug("%s: connected", peer_str);
-
-        /* receive header */
-        err = mu_read_n(conn, hdr, sizeof(hdr), &total);
-        if (err < 0){
-            mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-            goto request_done;
-        } else if (total != sizeof(hdr)){
-            mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
-            goto request_done;
-        }
-
-        /* parse header */
-        n = message_deserialize_header(&msg, hdr, sizeof(hdr));
-        if (n < 0) {
-            mu_stderr("%s: malformed message header", peer_str);
-            goto request_done;
-        }
-
-        if (msg.body_len == 0) {
-            mu_stderr("%s: zero-length body", peer_str);
-            message_set_error(&msg, RCODE_FORMERR);
-            goto send_response;
-        }
-
-        if (msg.body_len > MAX_BODY_LEN) {
-            mu_stderr("%s: body length too large (%" PRIu16 ")", peer_str, msg.body_len);
-            message_set_error(&msg, RCODE_FORMERR);
-            goto send_response;
-        }
-
-
-        /* receive body */
-        err = mu_read_n(conn, msg.body, msg.body_len, &total);
-        if (err < 0) {
-            mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-            goto request_done;
-        } else if (total != msg.body_len) {
-            mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
-            goto request_done;
-        }
-
-        printf("%s\n", msg.body);
-        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
 
         process_message(zone, &msg);
@@ -398,6 +307,30 @@ send_response:
 request_done:
         close(conn);
     }
+
+}
+
+
+static void
+serve_forever_udp4(int sk, struct zone * zone)
+{
+   stuct sockaddr_in addr;
+   socklen_t addr_size;
+   ssize_t n = 0;
+   unit8_t buf[MAX_MESSAGE_SIZE] = { 0 };
+   char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
+
+   while(1){
+        addr_size = sizeof(addr);
+        n = recvfrom(sk, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addr_size);
+        if (n== -1)
+            mu_die_errno(errno, "recvfrom");
+        
+        mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
+        mu_pr_debug("%s: tx %zd", peer_str, n);
+
+        n = message_deserialize(&msg, buf, sizeof(buf));
+   }
 
 }
 

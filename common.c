@@ -55,6 +55,7 @@ message_deserialize_header(struct message *msg, uint8_t * buf, size_t size)
     memcpy(&msg->body_len, p, sizeof(msg->body_len));
     msg->body_len = be16toh(msg->body_len);
     p += sizeof(msg->body_len);
+    
 
     return HEADER_SIZE;
 }
@@ -87,4 +88,43 @@ message_serialize(struct message *msg, uint8_t *buf, size_t size)
     memcpy(p, msg->body, body_len);
 
     return (ssize_t)(HEADER_SIZE + body_len);
+}
+
+
+ssize_t
+message_deserialize(struct message *msg, const unint8_t *buf, size_t size)
+{
+    const unint8_t *p = buf;
+    unint16_t len;
+    
+
+    mu_memzero_p(msg);
+
+    if (size < HEADER_SIZE)
+        return -ENOMSG;
+
+    /* deserialize header*/
+    memcpy(&msg->id, p, sizeof(msg->id));
+    msg->id = be32toh(msg->id);
+    p += sizeof(msg->id);
+
+    memcpy(&msg->type, p, sizeof(msg->type));
+    msg->type = be32toh(msg->type);
+    p += sizeof(msg->type);
+
+    memcpy(&len, p, sizeof(len));
+    msg->body_len = be16toh(len);
+    p += sizeof(msg->body_len);
+
+    if (msg->body_len > MAX_BODY_LEN)
+        return -E2BIG;
+    
+    /* deserialze body */
+    if ((HEADER_SIZE + msg->body_len) > size) {
+        return -ENOMSG;
+    }
+
+    memcpy(msg->boyd, p, msg->body_len);
+
+    return (ssize_t)(HEADER_SIZE + msg->body_len);
 }

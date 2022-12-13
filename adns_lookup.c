@@ -97,6 +97,59 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
 
 static int
+udp_lookup(int sk, const int qtype, const char * query ){
+    uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
+    char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
+    uint8_t hdr[HEADER_SIZE] = { 0 };
+    int err;
+    size_t total;
+    struct message msg;
+    ssize_t n;
+
+    msg.type = qtype;
+    message_set_body(&msg, query);
+    //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
+    n = message_serialize(&msg, buf, sizeof(buf));
+    if (n < 0)
+        mu_die("message_serialize");
+    
+    err = mu_write_n(sk, buf, (size_t)n, &total);
+    if (err < 0)
+        mu_stderr_errno(-err, "%s: TCP send fialed", peer_str); 
+
+    err = mu_read_n(sk, hdr, sizeof(hdr), &total);
+    if (err < 0){
+        mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
+    } else if (total != sizeof(hdr)){
+        mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
+    }
+
+    /* parse header */
+    n = message_deserialize_header(&msg, hdr, sizeof(hdr));
+    if (n < 0) {
+        mu_stderr("%s: malformed message header", peer_str);
+    }
+
+    /* receive body */
+    err = mu_read_n(sk, msg.body, msg.body_len, &total);
+    if (err < 0) {
+        mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
+    } else if (total != msg.body_len) {
+        mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
+    }
+
+    printf("%s\n", msg.body);
+    //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
+        
+
+    return msg.type;
+}
+
+
+static int
 client_create(const char *ip, const char *port, bool is_tcp)
 {
     int sk;
@@ -184,6 +237,8 @@ main(int argc,char *argv[])
     
     if (is_tcp)
         tcp_lookup(sk, QTYPE_A, argv[optind]);
+    else
+        udp_lookup(sk, QTYPE_A, argv[optind]);
 
 
     free(ip_str);
