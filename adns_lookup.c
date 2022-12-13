@@ -89,7 +89,7 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
         //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
-    printf("%s", msg.body);   
+    printf("%s\n", msg.body);   
 
     return msg.type;
 }
@@ -130,7 +130,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
         mu_die_errno(errno, "recvfrom");
 
 
-    printf("%s", msg.body);   
+    printf("%s\n", msg.body);   
     
     return msg.type;
 }
