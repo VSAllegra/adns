@@ -81,7 +81,7 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     /* receive body */
     err = mu_read_n(sk, msg.body, msg.body_len, &total);
     if (err < 0) {
-        mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
+        mu_stderr_errno(-err, "%s: error handling TCP request", peer_str);
     } else if (total != msg.body_len) {
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     }
@@ -124,26 +124,21 @@ udp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
     }
 
-    /* parse header */
-    n = message_deserialize_header(&msg, hdr, sizeof(hdr));
-    if (n < 0) {
-        mu_stderr("%s: malformed message header", peer_str);
-    }
-
-    /* receive body */
-    err = mu_read_n(sk, msg.body, msg.body_len, &total);
-    if (err < 0) {
-        mu_stderr_errno(-err, "%s: error handling UDP request", peer_str);
-    } else if (total != msg.body_len) {
-        mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
-    }
-
-    printf("%s\n", msg.body);
-    //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
-
+    addr_size = sizeof(addr);
+    n = recvfrom(sk, buf, sizeof(buf), 0, (struct sockaddr *)&addr, &addr_size);
+    if (n== -1)
+        mu_die_errno(errno, "recvfrom");
         
+    mu_sockaddr_in_to_str(&addr, peer_str, sizeof(peer_str));
+    mu_pr_debug("%s: tx %zd", peer_str, n);
 
+    n = message_deserialize(&msg, buf, sizeof(buf));
+
+    
+    mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+        peer_str, msg.id, msg.type, msg.body_len, msg.body);
+
+    
     return msg.type;
 }
 
