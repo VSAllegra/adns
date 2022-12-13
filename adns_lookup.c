@@ -55,8 +55,8 @@ tcp_lookup(int sk, const int qtype, const char * query ){
 
     msg.type = qtype;
     message_set_body(&msg, query);
-    mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-        peer_str, msg.id, msg.type, msg.body_len, msg.body);
+    //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
     n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
         mu_die("message_serialize");
@@ -86,10 +86,10 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete body", peer_str);
     }
     
-    mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-        peer_str, msg.id, msg.type, msg.body_len, msg.body);
+    //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
-        
+    printf(msg.body);   
 
     return msg.type;
 }
@@ -107,8 +107,8 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     msg.type = qtype;
     message_set_body(&msg, query);
-    mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-        peer_str, msg.id, msg.type, msg.body_len, msg.body);
+    //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+        //peer_str, msg.id, msg.type, msg.body_len, msg.body);
     n = message_serialize(&msg, buf, sizeof(buf));
     if (n < 0)
         mu_die("message_serialize");
@@ -124,14 +124,13 @@ udp_lookup(int sk, const int qtype, const char * query ){
         mu_stderr_errno(-err, "%s: disconnected: failed to receive complete header", peer_str);
     }
 
-    n = recvfrom(sk, msg.body, msg.body_len, 0, NULL, NULL);
-    if (n== -1)
+
+    n = recvfrom(sk, &msg.body, msg.body_len, 0, NULL, NULL);
+    if (n == -1)
         mu_die_errno(errno, "recvfrom");
 
-    
-    mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-        peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
+    printf(msg.body);
     
     return msg.type;
 }

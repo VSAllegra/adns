@@ -348,16 +348,16 @@ serve_forever_udp4(int sk, struct zone * zone)
             message_set_error(&msg, RCODE_FORMERR);
             
         }
-        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
-            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", query=\"%s\"",
+            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
 
         process_message(zone, &msg);
 
       
 send_resonse:
-        mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
-            peer_str, msg.id, msg.type, msg.body_len, msg.body);
+        //mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
+            //peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
         n = message_serialize(&msg, buf, sizeof(buf));
         if (n < 0)
