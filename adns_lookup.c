@@ -232,11 +232,11 @@ main(int argc,char *argv[])
     else
         type = udp_lookup(sk, QTYPE_A, query);
 
-     if(msg.type == 2){
+     if(type == 2){
         printf("malformed request\n");
         exit(1);
     }
-    else if (msg.type == 3){
+    else if (type == 3){
         printf("not found\n");
         exit(1);
     }
