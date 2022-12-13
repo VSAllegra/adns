@@ -80,7 +80,7 @@ tcp_lookup(int sk, const int qtype, const char * query ){
         exit(-1);
     }
     else if (msg.type == RCODE_NXDOMAIN){
-        print("not found\n");
+        printf("not found\n");
         exit(-1);
     }
 
@@ -133,7 +133,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
         exit(-1);
     }
     else if (msg.type == RCODE_NXDOMAIN){
-        print("not found\n");
+        printf("not found\n");
         exit(-1);
     }
     else
