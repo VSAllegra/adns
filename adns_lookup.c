@@ -86,7 +86,7 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     } 
 
 
-    if(sizeof(query) < 1){
+    if(sizeof(query) < 2){
         printf("malformed request\n");
         exit(1);
     }
@@ -116,10 +116,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
     struct message msg;
     ssize_t n;
 
-    if(sizeof(query) < 2){
-        printf("malformed request\n");
-        exit(1);
-    }
+    
 
     msg.type = qtype;
     message_set_body(&msg, query);
@@ -138,8 +135,11 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-  
-    if(msg.body_len == 0){
+    if(sizeof(query) < 2){
+        printf("malformed request\n");
+        exit(1);
+    }
+    else if(msg.body_len == 0){
         printf("not found\n");
         exit(1);
     } else {
