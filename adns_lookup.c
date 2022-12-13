@@ -210,7 +210,7 @@ main(int argc,char *argv[])
     }
     else if (nargs == 2){
         ip_str = mu_strdup(argv[optind]);
-         query = mu_strdup(argv[optind + 1]);
+        query = mu_strdup(argv[optind + 1]);
     }
     
 
@@ -219,9 +219,9 @@ main(int argc,char *argv[])
             is_tcp);
     
     if (is_tcp)
-        tcp_lookup(sk, QTYPE_A, argv[optind]);
+        tcp_lookup(sk, QTYPE_A, query);
     else
-        udp_lookup(sk, QTYPE_A, argv[optind]);
+        udp_lookup(sk, QTYPE_A, query);
 
 
     free(ip_str);
