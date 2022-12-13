@@ -99,7 +99,6 @@ static int
 udp_lookup(int sk, const int qtype, const char * query ){
     uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
     char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
-    uint8_t hdr[HEADER_SIZE] = { 0 };
     int err;
     size_t total;
     struct message msg;
