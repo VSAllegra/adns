@@ -332,15 +332,15 @@ serve_forever_udp4(int sk, struct zone * zone)
         n = message_deserialize(&msg, buf, sizeof(buf));
         if (n < 0) {
             if (n == -ENOMSG) {
-                mu_stderr("%s: incomplete header", peet_str);
+                mu_stderr("%s: incomplete header", peer_str);
                 continue;
             } else if (n == -E2BIG){
-                mu_stderr("%s: body length too large ("PRIu16")", peet_str, msg.body_len);
+                mu_stderr("%s: body length too large ("PRIu16")", peer_str, msg.body_len);
                 message_set_error(&msg, RCODE_FORMERR);
                 goto send_resonse;
             } else {
                 mu_stderr("%s: malformed request", peer_str);
-                continue
+                continue;
             }
         }
 
@@ -357,7 +357,7 @@ serve_forever_udp4(int sk, struct zone * zone)
    }
 
       
-send_response:
+send_resonse:
         mu_pr_debug("%s: request: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
             peer_str, msg.id, msg.type, msg.body_len, msg.body);
 
