@@ -116,6 +116,11 @@ udp_lookup(int sk, const int qtype, const char * query ){
     struct message msg;
     ssize_t n;
 
+    if(sizeof(query) < 2){
+        printf("malformed request\n");
+        exit(1);
+    }
+
     msg.type = qtype;
     message_set_body(&msg, query);
     //mu_pr_debug("%s: to_send: id=%" PRIu32 ", type=%" PRIu16 ", body_len=%" PRIu16 ", answer=\"%s\"",
@@ -133,11 +138,8 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(sizeof(query) < 2){
-        printf("malformed request\n");
-        exit(1);
-    }
-    else if(msg.body_len == 0){
+  
+    if(msg.body_len == 0){
         printf("not found\n");
         exit(1);
     } else {
