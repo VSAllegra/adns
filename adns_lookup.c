@@ -46,6 +46,8 @@
 static int
 tcp_lookup(int sk, const int qtype, const char * query ){
     uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
+    struct sockaddr_in addr;
+    socklen_t addr_size;
     char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
     uint8_t hdr[HEADER_SIZE] = { 0 };
     int err;
