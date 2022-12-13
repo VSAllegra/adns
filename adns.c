@@ -314,10 +314,10 @@ request_done:
 static void
 serve_forever_udp4(int sk, struct zone * zone)
 {
-   stuct sockaddr_in addr;
+   struct sockaddr_in addr;
    socklen_t addr_size;
    ssize_t n = 0;
-   unit8_t buf[MAX_MESSAGE_SIZE] = { 0 };
+   uint8_t buf[MAX_MESSAGE_SIZE] = { 0 };
    char peer_str[MU_LIMITS_MAX_INET_STR_SIZE] = { 0 };
 
    while(1){
