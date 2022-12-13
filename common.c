@@ -123,7 +123,7 @@ message_deserialize(struct message *msg, const uint8_t *buf, size_t size)
     if ((HEADER_SIZE + msg->body_len) > size)
         return -ENOMSG;
 
-    memcpy(msg->boyd, p, msg->body_len);
+    memcpy(msg->body, p, msg->body_len);
 
     return (ssize_t)(HEADER_SIZE + msg->body_len);
 }
