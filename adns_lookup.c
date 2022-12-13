@@ -120,16 +120,7 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(msg.type == 2){
-        printf("malformed request\n");
-        exit(-1);
-    }
-    else if (msg.type == 3){
-        printf("not found\n");
-        exit(-1);
-    }
-    else
-        printf("%s\n", msg.body);   
+    printf("%s\n", msg.body);   
     
     
     return msg.type;
@@ -232,8 +223,10 @@ main(int argc,char *argv[])
         type = tcp_lookup(sk, QTYPE_A, query);
     else
         type = udp_lookup(sk, QTYPE_A, query);
+    
+    printf("type : %d", type);
 
-     if(type == 2){
+    if(type == 2){
         printf("malformed request\n");
         exit(1);
     }
