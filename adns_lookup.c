@@ -75,11 +75,11 @@ tcp_lookup(int sk, const int qtype, const char * query ){
     /* parse header */
     n = message_deserialize_header(&msg, hdr, sizeof(hdr));
 
-    if(msg.type == RCODE_FORMERR){
+    if(msg.type == 2){
         printf("malformed request\n");
         exit(-1);
     }
-    else if (msg.type == RCODE_NXDOMAIN){
+    else if (msg.type == 3){
         printf("not found\n");
         exit(-1);
     }
@@ -128,11 +128,11 @@ udp_lookup(int sk, const int qtype, const char * query ){
 
     n = message_deserialize(&msg, buf, sizeof(buf));
 
-    if(msg.type == RCODE_FORMERR){
+    if(msg.type == 2){
         printf("malformed request\n");
         exit(-1);
     }
-    else if (msg.type == RCODE_NXDOMAIN){
+    else if (msg.type == 3){
         printf("not found\n");
         exit(-1);
     }
