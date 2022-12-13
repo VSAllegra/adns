@@ -174,6 +174,7 @@ main(int argc,char *argv[])
     };
     bool is_tcp = false;
     char *ip_str = NULL;
+    char *query; 
     char *port_str = NULL;
     int sk;
 
@@ -204,10 +205,12 @@ main(int argc,char *argv[])
     }
 
     nargs = argc - optind;
-    if (nargs < 1)
-        mu_die("expected one positional argument (Query), but found %d", nargs);
-    if (nargs == 2){
-        ip_str = mu_strdup(argv[optind+1]);
+    if (nargs  == 1){
+        query = mu_strdup(argv[optind]);
+    }
+    else if (nargs == 2){
+        ip_str = mu_strdup(argv[optind]);
+         query = mu_strdup(argv[optind + 1]);
     }
     
 
